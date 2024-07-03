@@ -10,10 +10,10 @@ export default class WS
   }>
   implements WebSocket
 {
-  static readonly CONNECTING = 0;
-  static readonly OPEN = 1;
-  static readonly CLOSING = 2;
-  static readonly CLOSED = 3;
+  static readonly CONNECTING = WebSocket.CONNECTING;
+  static readonly OPEN = WebSocket.OPEN;
+  static readonly CLOSING = WebSocket.CLOSING;
+  static readonly CLOSED = WebSocket.CLOSED;
 
   readonly CONNECTING = WS.CONNECTING;
   readonly OPEN = WS.OPEN;
@@ -22,7 +22,7 @@ export default class WS
 
   addEventListener = this.on;
   removeEventListener = this.off;
-  dispatchEvent(event: Event): boolean {
+  dispatchEvent(event: Event) {
     // @ts-ignore
     return this.emit(event.type, event);
   }
@@ -33,18 +33,8 @@ export default class WS
   get protocol(): Readonly<string> {
     return this.current.protocol;
   }
-  get readyState(): Readonly<number> {
-    switch (this.current?.readyState) {
-      case WebSocket.CONNECTING:
-        return this.CONNECTING;
-      case WebSocket.OPEN:
-        return this.OPEN;
-      case WebSocket.CLOSING:
-        return this.CLOSING;
-      case WebSocket.CLOSED:
-      default:
-        return this.CLOSED;
-    }
+  get readyState() {
+    return this.current?.readyState;
   }
   get extensions(): Readonly<string> {
     return this.current.extensions;
@@ -125,9 +115,12 @@ export default class WS
     ws.addEventListener("error", (e) => this.emit("error", e));
     ws.addEventListener("close", (e) => {
       this.emit("close", e);
-      if (this.closedByClient) return;
-      this._reconnecting = true;
-      this.open();
+      if (this.closedByClient) {
+        this._reconnecting = true;
+        this.open();
+      } else {
+        this._reconnecting = false;
+      }
     });
     this.current = ws;
   }

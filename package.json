@@ -1,6 +1,6 @@
 {
   "name": "@cch137/websocket",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "type": "module",
   "main": "index.js",
@@ -31,6 +31,6 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@cch137/emitter": "^0.1.5"
+    "@cch137/emitter": "^0.1.6"
   }
 }
